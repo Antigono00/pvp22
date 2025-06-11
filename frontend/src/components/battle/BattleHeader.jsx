@@ -7,7 +7,6 @@ const BattleHeader = ({
   enemyEnergy,
   difficulty,
   activePlayer,
-  maxEnergy = 25,
   playerActiveSynergies = [],
   enemyActiveSynergies = []
 }) => {
@@ -24,9 +23,8 @@ const BattleHeader = ({
   }, []);
   
   const isMobile = windowWidth <= 768;
-  const isVerySmall = windowWidth <= 400;
   
-  // Helper to get synergy icons
+  // Helper to format synergy icons
   const getSynergyIcon = (synergy) => {
     const synergyIcons = {
       'species': '👥',
@@ -64,59 +62,40 @@ const BattleHeader = ({
     }
   };
   
-  // Mobile layout with minimal content
+  // Mobile layout
   if (isMobile) {
     return (
       <div className="battle-header">
+        {/* Left: Turn and difficulty */}
         <div className="battle-info">
-          {/* Turn indicator */}
           <div className="turn-counter">
+            <span className="turn-label">T</span>
             <span className="turn-number">{turn}</span>
-            {!isVerySmall && <span className="turn-label">TURN</span>}
           </div>
           
-          {/* Difficulty badge */}
           <div className="difficulty-indicator" 
-               style={{ backgroundColor: getDifficultyColor(difficulty) }}>
-            {isVerySmall ? difficulty.charAt(0).toUpperCase() : difficulty.toUpperCase()}
+            style={{ backgroundColor: getDifficultyColor(difficulty) }}>
+            {difficulty.charAt(0).toUpperCase()}
           </div>
           
-          {/* Active player indicator */}
           <div className={`active-player-indicator ${activePlayer === 'enemy' ? 'enemy-active' : 'player-active'}`}>
-            {activePlayer === 'player' ? 
-              (isVerySmall ? '👤' : 'YOUR TURN') : 
-              (isVerySmall ? '🤖' : 'ENEMY TURN')}
+            {activePlayer === 'player' ? '👤' : '🤖'}
           </div>
         </div>
         
-        {/* Synergy totals - Only show if we have synergies */}
-        {(playerTotalBonus > 0 || enemyTotalBonus > 0) && (
-          <div className="synergy-section">
-            {playerTotalBonus > 0 && (
-              <div className="synergy-total player">
-                <div className="synergy-total-value">+{Math.round(playerTotalBonus * 100)}%</div>
-                <div className="synergy-total-label">YOUR SYNERGY</div>
-              </div>
-            )}
-            
-            {enemyTotalBonus > 0 && (
-              <div className="synergy-total enemy">
-                <div className="synergy-total-value">+{Math.round(enemyTotalBonus * 100)}%</div>
-                <div className="synergy-total-label">ENEMY SYNERGY</div>
-              </div>
-            )}
-          </div>
-        )}
-        
-        {/* Energy displays */}
+        {/* Right: Energy with synergy bonuses */}
         <div className="energy-displays">
-          <div className="player-energy">
-            <div className="energy-label">YOUR ENERGY</div>
+          <div 
+            className="player-energy"
+            data-synergy={playerTotalBonus > 0 ? `+${Math.round(playerTotalBonus * 100)}%` : ''}
+          >
             <div className="energy-value">{playerEnergy}</div>
           </div>
           
-          <div className="enemy-energy">
-            <div className="energy-label">ENEMY ENERGY</div>
+          <div 
+            className="enemy-energy"
+            data-synergy={enemyTotalBonus > 0 ? `+${Math.round(enemyTotalBonus * 100)}%` : ''}
+          >
             <div className="energy-value">{enemyEnergy}</div>
           </div>
         </div>
@@ -124,18 +103,18 @@ const BattleHeader = ({
     );
   }
   
-  // Desktop layout with hover details
+  // Desktop layout
   return (
     <div className="battle-header">
+      {/* Left: Turn and difficulty */}
       <div className="battle-info">
-        {/* Turn and difficulty indicators */}
         <div className="turn-counter">
-          <div className="turn-label">TURN</div>
-          <div className="turn-number">{turn}</div>
+          <span className="turn-label">TURN</span>
+          <span className="turn-number">{turn}</span>
         </div>
         
         <div className="difficulty-indicator" 
-             style={{ backgroundColor: getDifficultyColor(difficulty) }}>
+          style={{ backgroundColor: getDifficultyColor(difficulty) }}>
           {difficulty.toUpperCase()}
         </div>
         
@@ -144,42 +123,44 @@ const BattleHeader = ({
         </div>
       </div>
       
-      {/* Synergy section with hover details */}
-      <div className="synergy-section">
-        {playerTotalBonus > 0 && (
-          <div className="synergy-total player">
-            <div className="synergy-total-value">+{Math.round(playerTotalBonus * 100)}%</div>
-            <div className="synergy-total-label">YOUR SYNERGY</div>
+      {/* Center: Synergy displays with hover */}
+      <div className="field-synergies">
+        {playerActiveSynergies.length > 0 && (
+          <div className="synergy-display">
+            <span className="synergy-label">YOUR SYNERGY</span>
+            <span className="synergy-total">+{Math.round(playerTotalBonus * 100)}%</span>
             
-            {/* Dropdown breakdown on hover */}
-            <div className="synergy-breakdown">
+            {/* Hover details */}
+            <div className="synergy-details">
+              <div className="synergy-details-title">Synergy Breakdown</div>
               {playerActiveSynergies.map((synergy, index) => (
-                <div key={index} className="synergy-breakdown-item">
-                  <div className="synergy-name">
-                    <span className="synergy-icon">{getSynergyIcon(synergy)}</span>
+                <div key={index} className="synergy-item">
+                  <div className="synergy-item-name">
+                    <span className="synergy-item-icon">{getSynergyIcon(synergy)}</span>
                     <span>{synergy.name || synergy.type}</span>
                   </div>
-                  <div className="synergy-bonus">+{Math.round(synergy.bonus * 100)}%</div>
+                  <span className="synergy-item-value">+{Math.round(synergy.bonus * 100)}%</span>
                 </div>
               ))}
             </div>
           </div>
         )}
         
-        {enemyTotalBonus > 0 && (
-          <div className="synergy-total enemy">
-            <div className="synergy-total-value">+{Math.round(enemyTotalBonus * 100)}%</div>
-            <div className="synergy-total-label">ENEMY SYNERGY</div>
+        {enemyActiveSynergies.length > 0 && (
+          <div className="synergy-display enemy">
+            <span className="synergy-label">ENEMY SYNERGY</span>
+            <span className="synergy-total">+{Math.round(enemyTotalBonus * 100)}%</span>
             
-            {/* Dropdown breakdown on hover */}
-            <div className="synergy-breakdown enemy">
+            {/* Hover details */}
+            <div className="synergy-details">
+              <div className="synergy-details-title">Synergy Breakdown</div>
               {enemyActiveSynergies.map((synergy, index) => (
-                <div key={index} className="synergy-breakdown-item">
-                  <div className="synergy-name">
-                    <span className="synergy-icon">{getSynergyIcon(synergy)}</span>
+                <div key={index} className="synergy-item">
+                  <div className="synergy-item-name">
+                    <span className="synergy-item-icon">{getSynergyIcon(synergy)}</span>
                     <span>{synergy.name || synergy.type}</span>
                   </div>
-                  <div className="synergy-bonus">+{Math.round(synergy.bonus * 100)}%</div>
+                  <span className="synergy-item-value">+{Math.round(synergy.bonus * 100)}%</span>
                 </div>
               ))}
             </div>
@@ -187,24 +168,16 @@ const BattleHeader = ({
         )}
       </div>
       
-      {/* Energy displays */}
+      {/* Right: Energy displays */}
       <div className="energy-displays">
         <div className="player-energy">
           <div className="energy-label">YOUR ENERGY</div>
           <div className="energy-value">{playerEnergy}</div>
-          <div className="energy-bar-container">
-            <div className="energy-bar" 
-                 style={{ width: `${Math.min(100, (playerEnergy / maxEnergy) * 100)}%` }} />
-          </div>
         </div>
         
         <div className="enemy-energy">
           <div className="energy-label">ENEMY ENERGY</div>
           <div className="energy-value">{enemyEnergy}</div>
-          <div className="energy-bar-container">
-            <div className="energy-bar enemy" 
-                 style={{ width: `${Math.min(100, (enemyEnergy / maxEnergy) * 100)}%` }} />
-          </div>
         </div>
       </div>
     </div>
