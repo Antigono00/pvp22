@@ -87,6 +87,95 @@ body:has(.battle-game-overlay) button[style*="position:fixed"][style*="top:10px"
     height: 100%; /* Full height to ensure proper spacing */
     overflow: visible; /* Changed to allow for proper card expansion */
   }
+  /* src/battle.css - COMPLETE DESKTOP SIDEBAR LAYOUT WITH MOBILE FIXES AND ALL UI IMPROVEMENTS */
+
+/* Add critical direct style injection to force hiding wallet buttons */
+.battle-game-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10005;
+  overflow-y: auto; /* FIXED: Allow scrolling when window is small */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  isolation: isolate;
+}
+
+/* Additional style to directly inject into the document style and override the MobileRadixWrapper */
+.battle-game-overlay::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  z-index: 11000; /* Higher than the wallet button's z-index */
+  pointer-events: none;
+}
+
+/* Hide the actual connect button explicitly by applying styles directly based on its position */
+body:has(.battle-game-overlay) *[style*="position: fixed"][style*="top: 10px"][style*="right: 60px"],
+body:has(.battle-game-overlay) *[style*="position:fixed"][style*="top:10px"][style*="right:60px"],
+body:has(.battle-game-overlay) button[style*="position: fixed"][style*="top: 10px"][style*="right: 60px"],
+body:has(.battle-game-overlay) button[style*="position:fixed"][style*="top:10px"][style*="right:60px"] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  z-index: -1 !important;
+  position: absolute !important; 
+  transform: scale(0) !important;
+}
+
+/* Main battle container - ENHANCED for sidebar layout with minimum height - IMPROVED: Scrollable content */
+.battle-game {
+  width: 100%;
+  max-width: 1400px; /* Increased for sidebars */
+  height: auto; /* CHANGED: from 95vh to auto to enable proper scrolling */
+  min-height: 600px; /* FIXED: Minimum height to ensure content visibility */
+  margin: 10px auto;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
+  border-radius: 12px;
+  overflow: visible; /* CHANGED: from hidden to visible to allow content to overflow */
+  color: #e6e6e6;
+  font-family: 'Orbitron', sans-serif;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7), 0 0 20px rgba(76, 175, 80, 0.1);
+  position: relative;
+  z-index: 9996;
+  border: 2px solid rgba(76, 175, 80, 0.3);
+  isolation: isolate; /* Create proper stacking context */
+}
+
+/* DESKTOP LAYOUT WITH SIDEBARS */
+@media (min-width: 769px) {
+  .battle-content-wrapper {
+    display: flex;
+    flex: 1;
+    position: relative;
+    overflow: visible; /* Changed from hidden to visible to allow cards to expand */
+    height: auto; /* CHANGED: From fixed height to auto for better scrolling */
+    min-height: 600px; /* Minimum height to ensure content has space */
+    isolation: isolate; /* Create proper stacking context */
+  }
+  
+  /* Main battle area in center */
+  .battle-main-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    height: 100%; /* Full height to ensure proper spacing */
+    overflow: visible; /* Changed to allow for proper card expansion */
+  }
   
   /* Battlefield container takes all available height except hand */
   .battlefield-container {
@@ -474,6 +563,22 @@ body:has(.battle-game-overlay) button[style*="position:fixed"][style*="top:10px"
   background: #666 !important;
 }
 
+/* ===== SIMPLIFIED BATTLE HEADER STYLES ===== */
+.battle-header {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7));
+  border-bottom: 2px solid rgba(76, 175, 80, 0.5);
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  overflow: visible; /* Changed from hidden to visible */
+  max-height: 70px; /* Slightly reduced */
+  min-height: 50px;
+  flex-shrink: 0;
+  z-index: 1000;
+}
+
 .battle-header::after {
   content: '';
   position: absolute;
@@ -484,53 +589,50 @@ body:has(.battle-game-overlay) button[style*="position:fixed"][style*="top:10px"
   background: linear-gradient(90deg, transparent, #4CAF50, transparent);
 }
 
-/* Simplified turn section */
+/* Ultra-simplified desktop header */
 .battle-info {
   display: flex;
   align-items: center;
-  flex: 0 0 auto;
   gap: 10px;
+  flex: 0 0 auto; /* Don't let it grow */
 }
 
+/* Turn counter - more compact */
 .turn-counter {
-  background: rgba(0, 0, 0, 0.5);
-  padding: 4px 8px;
-  border-radius: 5px;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  border: 1px solid #444;
-}
-
-.turn-label {
-  font-size: 9px;
-  color: #aaa;
-  margin-bottom: 2px;
-}
-
-.turn-number {
-  font-size: 16px;
-  font-weight: bold;
-  color: white;
-}
-
-.difficulty-indicator {
+  background: rgba(0, 0, 0, 0.3);
   padding: 4px 8px;
-  border-radius: 5px;
-  font-weight: bold;
-  color: black;
-  font-size: 11px;
-  text-transform: uppercase;
+  border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.active-player-indicator {
-  font-weight: bold;
+.turn-label {
+  font-size: 10px;
+  margin-right: 4px;
+  color: #aaa;
+}
+
+.turn-number {
   font-size: 14px;
-  padding: 4px 8px;
-  border-radius: 5px;
-  border: 1px solid;
+  font-weight: bold;
+  color: #fff;
+}
+
+/* Difficulty badge */
+.difficulty-indicator {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  color: #000;
+  font-size: 10px;
   text-transform: uppercase;
+}
+
+/* Active player - more compact */
+.active-player-indicator {
+  font-size: 12px;
+  padding: 3px 6px;
 }
 
 .player-active {
@@ -557,151 +659,162 @@ body:has(.battle-game-overlay) button[style*="position:fixed"][style*="top:10px"
   50% { box-shadow: 0 0 15px rgba(244, 67, 54, 0.6); }
 }
 
-/* SIMPLIFIED SYNERGY DISPLAY */
-.synergy-section {
+/* ===== SIMPLIFIED SYNERGY DISPLAY ===== */
+/* Center section with simplified synergies */
+.field-synergies {
+  flex: 0 1 auto; /* Allow shrinking */
+  max-width: 300px; /* Limit width */
+  overflow: visible; /* Allow hover content */
   display: flex;
-  gap: 20px;
   justify-content: center;
-  align-items: center;
-  flex: 1;
+  gap: 20px;
   position: relative;
-  max-width: 40%;
 }
 
-.synergy-total {
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 5px;
-  padding: 4px 10px;
-  text-align: center;
+/* Only show total synergy values by default */
+.synergy-display {
   position: relative;
+  padding: 3px 8px;
+  background: rgba(76, 175, 80, 0.1);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  border-radius: 4px;
   cursor: pointer;
-  min-width: 100px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  min-width: 80px;
+  text-align: center;
 }
 
-.synergy-total.player {
-  border-left: 3px solid #4CAF50;
+.synergy-display.enemy {
+  background: rgba(244, 67, 54, 0.1);
+  border: 1px solid rgba(244, 67, 54, 0.3);
 }
 
-.synergy-total.enemy {
-  border-left: 3px solid #F44336;
-}
-
-.synergy-total-value {
-  font-size: 16px;
-  font-weight: bold;
-  color: #4CAF50;
-}
-
-.synergy-total.enemy .synergy-total-value {
-  color: #F44336;
-}
-
-.synergy-total-label {
-  font-size: 10px;
+.synergy-label {
+  font-size: 9px;
   color: #aaa;
   text-transform: uppercase;
-}
-
-/* Synergy breakdown on hover */
-.synergy-breakdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background: rgba(0, 0, 0, 0.95);
-  border-radius: 5px;
-  padding: 8px;
-  width: 220px;
-  max-width: 250px;
-  z-index: 1000;
-  display: none;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-  margin-top: 5px;
-}
-
-.synergy-total:hover .synergy-breakdown {
   display: block;
 }
 
-.synergy-breakdown-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 4px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  font-size: 12px;
-}
-
-.synergy-breakdown-item:last-child {
-  border-bottom: none;
-}
-
-.synergy-name {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  color: #ddd;
-}
-
-.synergy-icon {
+.synergy-total {
   font-size: 14px;
-}
-
-.synergy-bonus {
-  color: #4CAF50;
   font-weight: bold;
+  color: #4CAF50;
 }
 
-.synergy-breakdown.enemy .synergy-bonus {
+.synergy-display.enemy .synergy-total {
   color: #F44336;
 }
 
-/* Energy displays */
+/* Synergy details on hover */
+.synergy-details {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 5px;
+  background: rgba(0, 0, 0, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 8px;
+  z-index: 1000;
+  width: 180px;
+  text-align: left;
+}
+
+.synergy-display:hover .synergy-details {
+  display: block;
+}
+
+.synergy-details-title {
+  font-size: 10px;
+  color: #aaa;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+
+.synergy-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 3px;
+  font-size: 11px;
+}
+
+.synergy-item:last-child {
+  margin-bottom: 0;
+}
+
+.synergy-item-name {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.synergy-item-icon {
+  font-size: 12px;
+}
+
+.synergy-item-value {
+  font-weight: bold;
+  color: #4CAF50;
+}
+
+.synergy-display.enemy .synergy-item-value {
+  color: #F44336;
+}
+
+/* ===== ENERGY DISPLAYS ===== */
+/* Right side energy displays */
 .energy-displays {
   display: flex;
   gap: 15px;
   align-items: center;
-  flex: 0 0 auto;
+  flex: 0 0 auto; /* Don't let it grow */
+}
+
+.player-energy-section,
+.enemy-energy-section {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .player-energy, .enemy-energy {
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 5px;
-  padding: 4px 10px;
-  min-width: 70px;
+  padding: 4px 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1px solid #444;
+  min-width: 40px;
 }
 
 .energy-label {
   font-size: 9px;
-  color: #aaa;
-  text-transform: uppercase;
+  color: #999;
+  margin-bottom: 2px;
 }
 
 .energy-value {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
-  color: white;
 }
 
-/* Energy bars */
 .energy-bar-container {
-  width: 100%;
+  width: 60px;
   height: 4px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 2px;
   overflow: hidden;
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 .energy-bar {
   height: 100%;
   background: linear-gradient(90deg, #4CAF50, #66BB6A);
   border-radius: 2px;
-  transition: width 0.5s ease;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .energy-bar.enemy {
@@ -1699,6 +1812,13 @@ body:has(.battle-game-overlay) button[style*="position:fixed"][style*="top:10px"
   color: #4CAF50; 
   font-weight: bold;
   text-shadow: 0 0 4px rgba(76, 175, 80, 0.5);
+}
+
+.turn-indicator {
+  color: #aaa;
+  margin-right: 6px;
+  font-weight: bold;
+  font-size: 10px;
 }
 
 .log-message {
@@ -3079,295 +3199,36 @@ body.modal-open .creature-card {
   }
 }
 
-/* ===== MOBILE VERSION ===== */
+/* MOBILE ADJUSTMENTS - FIXED WITH PROPER LAYOUT */
 @media (max-width: 768px) {
-  /* Mobile header layout */
-  .battle-header {
-    height: auto;
-    max-height: none;
-    padding: 5px;
-    flex-direction: column;
-    gap: 5px;
+  .battle-game-overlay {
+    align-items: flex-start;
+    padding: 0;
   }
   
-  /* Mobile info row */
-  .battle-info {
-    width: 100%;
-    justify-content: space-between;
-  }
-  
-  /* Compact turn indicator */
-  .turn-counter {
-    flex-direction: row;
-    gap: 5px;
-    padding: 3px 6px;
-  }
-  
-  .turn-label {
-    display: none;
-  }
-  
-  .difficulty-indicator {
-    padding: 3px 6px;
-    font-size: 10px;
-  }
-  
-  .active-player-indicator {
-    font-size: 12px;
-    padding: 3px 6px;
-  }
-  
-  /* Mobile synergies - show just totals */
-  .synergy-section {
-    display: flex;
-    width: 100%;
+  .battle-game {
+    margin: 0;
+    max-height: 100vh;
+    height: 100vh;
+    border-radius: 0;
     max-width: 100%;
-    justify-content: center;
-    padding: 2px 0;
-  }
-  
-  .synergy-total {
-    padding: 2px 8px;
-    min-width: 80px;
-  }
-  
-  .synergy-total-value {
-    font-size: 14px;
-  }
-  
-  .synergy-total-label {
-    font-size: 8px;
-  }
-  
-  /* Mobile energy displays */
-  .energy-displays {
-    width: 100%;
-    justify-content: space-between;
-  }
-  
-  .player-energy, .enemy-energy {
-    padding: 2px 8px;
-    min-width: 60px;
-  }
-  
-  .energy-label {
-    font-size: 8px;
-  }
-  
-  .energy-value {
-    font-size: 16px;
-  }
-  
-  /* Hide energy bars on mobile */
-  .energy-bar-container {
-    display: none;
-  }
-  
-  /* ===== CRITICAL FIX: EQUAL SIZED CARDS ===== */
-  /* This ensures player cards are the same size as enemy cards */
-  
-  /* First: target both player and enemy cards with the same styles */
-  .battlefield-enemy .creature-card,
-  .battlefield-player .creature-card,
-  .hand-card-wrapper .creature-card {
-    width: 110px !important;
-    height: 160px !important;
-    flex-shrink: 0 !important;
-  }
-  
-  /* Fix image container heights */
-  .battlefield-enemy .creature-image-container,
-  .battlefield-player .creature-image-container,
-  .hand-card-wrapper .creature-image-container {
-    height: 90px !important;
-  }
-  
-  /* Fix card headers */
-  .battlefield-enemy .creature-card-header,
-  .battlefield-player .creature-card-header,
-  .hand-card-wrapper .creature-card-header {
-    padding: 4px 6px !important;
-    font-size: 10px !important;
-    height: 20px !important;
-  }
-  
-  /* Fix stat sections */
-  .battlefield-enemy .creature-card-footer,
-  .battlefield-player .creature-card-footer,
-  .hand-card-wrapper .creature-card-footer {
-    height: 50px !important;
-    padding: 4px !important;
-  }
-  
-  .battlefield-enemy .mini-stats,
-  .battlefield-player .mini-stats,
-  .hand-card-wrapper .mini-stats {
-    gap: 3px !important;
-    padding: 3px !important;
-  }
-  
-  .battlefield-enemy .mini-stat,
-  .battlefield-player .mini-stat,
-  .hand-card-wrapper .mini-stat {
-    font-size: 8px !important;
-    height: 14px !important;
-    padding: 2px !important;
-  }
-  
-  .battlefield-enemy .mini-stat .stat-icon,
-  .battlefield-player .mini-stat .stat-icon,
-  .hand-card-wrapper .mini-stat .stat-icon {
-    font-size: 10px !important;
-  }
-  
-  .battlefield-enemy .mini-stat .stat-value,
-  .battlefield-player .mini-stat .stat-value,
-  .hand-card-wrapper .mini-stat .stat-value {
-    font-size: 9px !important;
-  }
-  
-  /* Fix health bars */
-  .battlefield-enemy .health-bar-container,
-  .battlefield-player .health-bar-container,
-  .hand-card-wrapper .health-bar-container {
-    height: 8px !important;
-    margin: 3px !important;
-  }
-  
-  .battlefield-enemy .health-text,
-  .battlefield-player .health-text,
-  .hand-card-wrapper .health-text {
-    font-size: 8px !important;
-  }
-  
-  /* Improve hand card visibility on mobile */
-  .hand-card-wrapper {
-    width: 110px !important;
-    height: 160px !important;
-    overflow: visible !important;
-  }
-  
-  /* MOBILE HAND - FIXED POSITION AT BOTTOM */
-  .player-hand {
-    height: 170px !important; /* Adjusted for larger cards */
-    position: relative;
-    overflow: visible !important;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.85));
-    border-top: 2px solid rgba(76, 175, 80, 0.3);
-    z-index: 50 !important;
-    flex-shrink: 0;
-    width: 100%;
-    margin-top: auto;
-  }
-  
-  .hand-cards {
-    display: flex;
-    gap: 5px;
-    padding: 5px 10px;
-    overflow-x: auto;
-    overflow-y: visible;
-    -webkit-overflow-scrolling: touch;
-    height: 100%;
-  }
-  
-  /* Fix battlefield layout */
-  .battlefield-enemy, 
-  .battlefield-player {
-    padding: 8px 5px !important;
-    gap: 8px !important;
-    justify-content: flex-start !important;
-    overflow-x: auto !important;
-    position: relative;
-  }
-  
-  /* Style scroll indicators */
-  .battlefield-enemy::after,
-  .battlefield-player::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 30px;
-    height: 100%;
-    background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.5));
-    pointer-events: none;
-    opacity: 0.7;
-    z-index: 10;
-  }
-  
-  /* Mobile creature slots */
-  .creature-slot {
-    width: 110px;
-    height: 160px;
-    flex-shrink: 0;
-    margin: 2px;
-  }
-  
-  /* Ensure battlefield and hand use same font sizes */
-  .creature-card-header .creature-form {
-    font-size: 9px;
-    padding: 1px 3px;
-  }
-  
-  .attack-type-indicator {
-    width: 22px;
-    height: 22px;
-    bottom: 3px !important;
-    right: 3px !important;
-  }
-  
-  .attack-icon {
-    font-size: 12px;
-  }
-  
-  .status-effects {
-    top: 25px;
-    left: 3px;
-  }
-  
-  /* Mobile battlefield container */
-  .battlefield-container {
-    flex: 1;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    height: 45vh;
   }
   
-  /* Mobile battlefield */
-  .battlefield {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-  }
-  
-  .battlefield-enemy {
-    border-bottom: 1px solid rgba(244, 67, 54, 0.3);
-  }
-  
-  .battlefield-player {
-    border-top: 1px solid rgba(76, 175, 80, 0.3);
-  }
-  
-  .battlefield-center {
-    height: 24px;
-    font-size: 10px;
-  }
-  
-  /* Selected card on mobile */
-  .hand-card-wrapper.selected .creature-card {
-    transform: scale(1.05) !important;
-    z-index: 100;
-    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.8);
-  }
-  
-  /* Hide synergy details on mobile - remove hover functionality */
-  .field-synergies {
-    display: none;
+  /* Simplified mobile header */
+  .battle-header {
+    padding: 5px 8px;
+    max-height: 60px;
+    min-height: 45px;
   }
   
   /* Ultra-simple synergy display for mobile */
+  .field-synergies {
+    display: none; /* Hide synergy breakdown */
+  }
+  
+  /* Add synergy total to energy displays */
   .player-energy::after,
   .enemy-energy::after {
     content: attr(data-synergy);
@@ -3384,64 +3245,280 @@ body.modal-open .creature-card {
   .enemy-energy::after {
     color: #F44336;
   }
-}
-
-/* Very small mobile screens */
-@media (max-width: 400px) {
-  .battle-header {
+  
+  /* Mobile content wrapper */
+  .battle-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 40px); /* Subtract header height */
+    overflow: hidden;
+    position: relative;
+  }
+  
+  /* Mobile main area */
+  .battle-main-area {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+    height: auto;
+  }
+  
+  /* Mobile battlefield container */
+  .battlefield-container {
+    flex: 1; /* Take remaining space */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 45vh; /* Fixed height for battlefield */
+  }
+  
+  /* Mobile battlefield */
+  .battlefield {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* ===== CONSISTENT CARD SIZES FOR MOBILE ===== */
+  /* Ensure ALL cards have the same size */
+  .battlefield-enemy .creature-card,
+  .battlefield-player .creature-card,
+  .player-hand .creature-card,
+  .hand-card-wrapper .creature-card {
+    width: 90px !important; /* Slightly larger than before */
+    height: 135px !important; /* Proportionally larger */
+    flex-shrink: 0;
+  }
+  
+  /* Image container */
+  .battlefield-enemy .creature-image-container,
+  .battlefield-player .creature-image-container,
+  .player-hand .creature-image-container,
+  .hand-card-wrapper .creature-image-container {
+    height: 80px !important; /* Slightly larger */
+  }
+  
+  /* Card header */
+  .battlefield-enemy .creature-card-header,
+  .battlefield-player .creature-card-header,
+  .player-hand .creature-card-header,
+  .hand-card-wrapper .creature-card-header {
+    padding: 4px 6px;
+    font-size: 9px;
+    height: 20px;
+  }
+  
+  /* Card footer */
+  .battlefield-enemy .creature-card-footer,
+  .battlefield-player .creature-card-footer,
+  .player-hand .creature-card-footer,
+  .hand-card-wrapper .creature-card-footer {
+    height: 35px;
     padding: 3px;
   }
   
-  /* Even more compact layout */
-  .turn-counter, .difficulty-indicator, .active-player-indicator,
-  .player-energy, .enemy-energy {
-    padding: 2px 5px;
+  /* Stats grid */
+  .battlefield-enemy .mini-stats,
+  .battlefield-player .mini-stats,
+  .player-hand .mini-stats,
+  .hand-card-wrapper .mini-stats {
+    gap: 3px;
+    padding: 3px;
   }
   
-  .synergy-total {
-    min-width: 60px;
-    padding: 2px 5px;
+  /* Individual stat items */
+  .battlefield-enemy .mini-stat,
+  .battlefield-player .mini-stat,
+  .player-hand .mini-stat,
+  .hand-card-wrapper .mini-stat {
+    font-size: 8px; /* Slightly larger for better readability */
+    height: 14px;
+    padding: 1px 2px;
   }
   
-  .synergy-total-value {
-    font-size: 12px;
+  /* Icons in stats */
+  .battlefield-enemy .mini-stat .stat-icon,
+  .battlefield-player .mini-stat .stat-icon,
+  .player-hand .mini-stat .stat-icon,
+  .hand-card-wrapper .mini-stat .stat-icon {
+    font-size: 9px;
   }
   
-  /* Slightly smaller cards for very small screens */
-  .battlefield-enemy .creature-card,
-  .battlefield-player .creature-card,
-  .hand-card-wrapper .creature-card {
-    width: 100px !important;
-    height: 145px !important;
+  /* Stat values */
+  .battlefield-enemy .mini-stat .stat-value,
+  .battlefield-player .mini-stat .stat-value,
+  .player-hand .mini-stat .stat-value,
+  .hand-card-wrapper .mini-stat .stat-value {
+    font-size: 8px;
   }
   
-  .battlefield-enemy .creature-image-container,
-  .battlefield-player .creature-image-container,
-  .hand-card-wrapper .creature-image-container {
-    height: 80px !important;
+  /* Health bar */
+  .battlefield-enemy .health-bar-container,
+  .battlefield-player .health-bar-container,
+  .player-hand .health-bar-container,
+  .hand-card-wrapper .health-bar-container {
+    height: 7px;
+    margin: 3px;
+  }
+  
+  /* Health text */
+  .battlefield-enemy .health-text,
+  .battlefield-player .health-text,
+  .player-hand .health-text,
+  .hand-card-wrapper .health-text {
+    font-size: 8px;
+  }
+  
+  /* Improve battlefield layout */
+  .battlefield-enemy, 
+  .battlefield-player {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    padding: 5px;
+    gap: 5px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    height: 50%;
+  }
+  
+  .battlefield-enemy {
+    border-bottom: 1px solid rgba(244, 67, 54, 0.3);
+  }
+  
+  .battlefield-player {
+    border-top: 1px solid rgba(76, 175, 80, 0.3);
+  }
+  
+  .battlefield-center {
+    height: 24px; /* Smaller on mobile */
+    font-size: 10px;
+  }
+  
+  /* Mobile creature slots */
+  .creature-slot {
+    width: 90px;
+    height: 135px;
+    flex-shrink: 0;
+    margin: 2px;
+  }
+  
+  /* Mobile optimizations for clean layout */
+  .creature-card-header .creature-form {
+    font-size: 8px;
+    padding: 1px 3px;
+  }
+  
+  .attack-type-indicator {
+    width: 20px;
+    height: 20px;
+    bottom: 3px !important;
+    right: 3px !important;
+  }
+  
+  .attack-icon {
+    font-size: 10px;
+  }
+  
+  .status-effects {
+    top: 25px;
+    left: 3px;
+  }
+  
+  /* MOBILE HAND - FIXED POSITION AT BOTTOM */
+  .player-hand {
+    height: 145px !important; /* Adjusted for larger cards */
+    position: relative;
+    overflow: visible !important;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.85));
+    border-top: 2px solid rgba(76, 175, 80, 0.3);
+    z-index: 50 !important; /* FIXED: Lowered z-index to allow modals to appear above it */
+    flex-shrink: 0;
+    width: 100%;
+    margin-top: auto; /* Push to bottom */
+  }
+  
+  .hand-cards {
+    display: flex;
+    gap: 5px;
+    padding: 5px 10px;
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    height: 100%;
   }
   
   .hand-card-wrapper {
-    width: 100px !important;
-    height: 145px !important;
+    width: 90px;
+    flex-shrink: 0;
+    height: 135px;
   }
   
-  /* Adjust hand height for smaller cards */
-  .player-hand {
-    height: 155px !important;
+  /* Selected card on mobile */
+  .hand-card-wrapper.selected .creature-card {
+    transform: scale(1.05) !important;
+    z-index: 100;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.8);
   }
   
-  /* Slightly smaller creature slots */
-  .creature-slot {
-    width: 100px;
-    height: 145px;
-  }
-}
+  /* Mobile hand cards specific */
+  .hand-card-wrapper .attack-type-indicator {
+    width: 16px;
+    height: 16px;
+    bottom: 2px !important;
+    right: 2px !important;
   }
   
   .hand-card-wrapper .attack-icon {
     font-size: 8px;
   }
+  
+  .hand-card-wrapper .creature-card-header {
+    height: 16px;
+    padding: 2px 4px;
+  }
+
+/* Reset previous approaches - Back to basics with a better stacking context solution */
+.battle-game-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999999 !important; /* EXTREMELY high z-index to be above everything */
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Ensure the battle game inherits the high z-index */
+.battle-game {
+  /* Main styles remain unchanged */
+  width: 100%;
+  max-width: 1400px;
+  height: auto;
+  min-height: 600px;
+  margin: 10px auto;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
+  border-radius: 12px;
+  overflow: visible;
+  color: #e6e6e6;
+  font-family: 'Orbitron', sans-serif;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7), 0 0 20px rgba(76, 175, 80, 0.1);
+  position: relative;
+  z-index: inherit; /* Inherit the high z-index from parent */
+  border: 2px solid rgba(76, 175, 80, 0.3);
+}
 
 /* DIRECT CODE-BASED SOLUTION FOR MOBILE RADIX BUTTON */
 /* This uses the exact styles and identifiers from your MobileRadixWrapper component */
@@ -3450,6 +3527,12 @@ body:has(.battle-game-overlay) button[style*="position:fixed"][style*="top:10px"
 body:has(.battle-game-overlay) button[style*="position: fixed; top: 10px; right: 60px"],
 body:has(.battle-game-overlay) button[style*="zIndex: 10000"],
 body:has(.battle-game-overlay) button[style*="z-index: 10000"] {
+  /* Since this is in the MobileRadixWrapper.jsx code:
+     position: 'fixed',
+     top: '10px',
+     right: '60px',
+     zIndex: 10000,
+  */
   display: none !important;
   top: -9999px !important;
   left: -9999px !important;
@@ -3887,51 +3970,11 @@ body:has(.battle-game-overlay) button[style*="z-index: 10000"] {
 /* For very small screens */
 @media (max-width: 400px) {
   .battle-header {
-    padding: 3px;
+    max-height: 50px;
+    min-height: 45px;
   }
   
-  /* Even more compact layout */
-  .turn-counter, .difficulty-indicator, .active-player-indicator,
-  .player-energy, .enemy-energy {
-    padding: 2px 5px;
-  }
-  
-  .synergy-total {
-    min-width: 60px;
-    padding: 2px 5px;
-  }
-  
-  .synergy-total-value {
-    font-size: 12px;
-  }
-  
-  /* Slightly smaller cards for very small screens */
-  .battlefield-enemy .creature-card,
-  .battlefield-player .creature-card,
-  .hand-card-wrapper .creature-card {
-    width: 100px !important;
-    height: 145px !important;
-  }
-  
-  .battlefield-enemy .creature-image-container,
-  .battlefield-player .creature-image-container,
-  .hand-card-wrapper .creature-image-container {
-    height: 80px !important;
-  }
-  
-  .hand-card-wrapper {
-    width: 100px !important;
-    height: 145px !important;
-  }
-  
-  /* Adjust hand height for smaller cards */
-  .player-hand {
-    height: 155px !important;
-  }
-  
-  /* Slightly smaller creature slots */
-  .creature-slot {
-    width: 100px;
-    height: 145px;
+  .energy-value {
+    font-size: 14px;
   }
 }
